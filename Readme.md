@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Вячеслав Саввиди](https://up.htmlacademy.ru/javascript/21/user/1245003).
-* Наставник: `Неизвестно`.
+* Наставник: [Виктория Ткаченко](https://htmlacademy.ru/profile/id415969).
 
 ---
 
