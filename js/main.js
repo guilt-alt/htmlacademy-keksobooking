@@ -5,6 +5,7 @@ const TIMES = [
   `13:00`,
   `14:00`
 ];
+
 const FEATURES = [
   `wifi`,
   `dishwasher`,
@@ -13,6 +14,7 @@ const FEATURES = [
   `elevator`,
   `conditioner`
 ];
+
 const HOUSE_TYPE = [
   `palace`,
   `flat`,
@@ -26,15 +28,9 @@ const PHOTOS = [
   `http://o0.github.io/assets/images/tokyo/hotel3.jpg`
 ];
 
-let generatedMock = [];
-
 const mapPins = document.querySelector(`.map__pins`);
 
-document.querySelector(`.map`).classList.remove(`map--faded`);
-
-const getRandomIndex = (arr) => {
-  return Math.floor(Math.random() * arr.length);
-};
+const getRandomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 const getRandomInt = (min, max) => {
   min = Math.ceil(min);
@@ -44,7 +40,7 @@ const getRandomInt = (min, max) => {
 
 const cutArray = (arr) => arr.slice(0, getRandomInt(1, arr.length));
 
-const generateObj = (i) => {
+const generateMock = (i) => {
   let object = {
     'author': {
       'avatar': `img/avatars/user0${i}.png`
@@ -53,11 +49,11 @@ const generateObj = (i) => {
       'title': `Заголовок предложения`,
       'address': `${getRandomInt(600, 350)}, ${getRandomInt(350, 600)}`,
       'price': getRandomInt(5000, 15000),
-      'type': HOUSE_TYPE[getRandomIndex(HOUSE_TYPE)],
+      'type': getRandomItem(HOUSE_TYPE),
       'rooms': getRandomInt(1, 4),
       'guests': getRandomInt(4, 8),
-      'checkin': TIMES[getRandomIndex(TIMES)],
-      'checkout': TIMES[getRandomIndex(TIMES)],
+      'checkin': getRandomItem(TIMES),
+      'checkout': getRandomItem(TIMES),
       'features': cutArray(FEATURES),
       'description': `Cтрока с описанием`,
       'photos': cutArray(PHOTOS)
@@ -68,18 +64,20 @@ const generateObj = (i) => {
     }
   };
 
-  return object;
+  let generatedMock = [];
+
+  for (let j = 0; j < 8; j++) {
+    generatedMock.push(object);
+  }
+
+  return generatedMock;
 };
 
-for (let i = 0; i < 8; i++) {
-  generatedMock.push(generateObj(i + 1));
-}
+const renderPin = (pins) => {
+  const pinTemplate = document.querySelector(`#pin`)
+    .content
+    .querySelector(`button`);
 
-const pinTemplate = document.querySelector(`#pin`)
-  .content
-  .querySelector(`button`);
-
-const renderPin = function (pins) {
   const pin = pinTemplate.cloneNode(true);
   pin.style = `left: ${pins.location.x}px; top: ${pins.location.y}px;`;
   pin.querySelector(`img`).src = pins.author.avatar;
@@ -88,9 +86,17 @@ const renderPin = function (pins) {
   return pin;
 };
 
-const fragment = document.createDocumentFragment();
-for (let i = 0; i < generatedMock.length; i++) {
-  fragment.appendChild(renderPin(generatedMock[i]));
-}
+const createPins = (arr) => {
+  const fragment = document.createDocumentFragment();
+  for (let i = 0; i < arr.length; i++) {
+    fragment.appendChild(renderPin(generateMock(i + 1)[i]));
+  }
 
-mapPins.appendChild(fragment);
+  return mapPins.appendChild(fragment);
+};
+
+document.querySelector(`.map`).classList.remove(`map--faded`);
+
+const generatedMocks = generateMock();
+
+createPins(generatedMocks);
