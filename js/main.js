@@ -41,33 +41,32 @@ const getRandomInt = (min, max) => {
 
 const cutArray = (arr) => arr.slice(0, getRandomInt(1, arr.length));
 
-const generateMock = (i) => {
-  let object = {
-    'author': {
-      'avatar': `img/avatars/user0${i}.png`
-    },
-    'offer': {
-      'title': `Заголовок предложения`,
-      'address': `${getRandomInt(600, 350)}, ${getRandomInt(350, 600)}`,
-      'price': getRandomInt(5000, 15000),
-      'type': getRandomItem(HOUSE_TYPE),
-      'rooms': getRandomInt(1, 4),
-      'guests': getRandomInt(4, 8),
-      'checkin': getRandomItem(TIMES),
-      'checkout': getRandomItem(TIMES),
-      'features': cutArray(FEATURES),
-      'description': `Cтрока с описанием`,
-      'photos': cutArray(PHOTOS)
-    },
-    'location': {
-      'x': getRandomInt(mapPins.clientWidth - 260, 130),
-      'y': getRandomInt(130, 640)
-    }
-  };
-
+const generateMock = () => {
   let generatedMock = [];
 
   for (let j = 0; j < 8; j++) {
+    let object = {
+      'author': {
+        'avatar': `img/avatars/user0${j + 1}.png`
+      },
+      'offer': {
+        'title': `Заголовок предложения`,
+        'address': `${getRandomInt(600, 350)}, ${getRandomInt(350, 600)}`,
+        'price': getRandomInt(5000, 15000),
+        'type': getRandomItem(HOUSE_TYPE),
+        'rooms': getRandomInt(1, 4),
+        'guests': getRandomInt(4, 8),
+        'checkin': getRandomItem(TIMES),
+        'checkout': getRandomItem(TIMES),
+        'features': cutArray(FEATURES),
+        'description': `Cтрока с описанием`,
+        'photos': cutArray(PHOTOS)
+      },
+      'location': {
+        'x': getRandomInt(mapPins.clientWidth - 260, 130),
+        'y': getRandomInt(130, 640)
+      }
+    };
     generatedMock.push(object);
   }
 
@@ -160,16 +159,16 @@ const renderCard = (data) => {
 const createPins = (arr) => {
   const pinsFragment = document.createDocumentFragment();
   for (let i = 0; i < arr.length; i++) {
-    pinsFragment.appendChild(renderPin(generateMock(i + 1)[i]));
+    pinsFragment.appendChild(renderPin(arr[i]));
   }
 
   return mapPins.appendChild(pinsFragment);
 };
 
-const createCard = () => {
+const createCard = (arr) => {
   const mapFilters = map.querySelector(`.map__filters-container`);
   const cardsFragment = document.createDocumentFragment();
-  cardsFragment.appendChild(renderCard(generateMock(1)[1]));
+  cardsFragment.appendChild(renderCard(arr[0]));
 
   return map.insertBefore(cardsFragment, mapFilters);
 };
