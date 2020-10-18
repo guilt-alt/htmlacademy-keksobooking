@@ -31,6 +31,16 @@ const PHOTOS = [
 const map = document.querySelector(`.map`);
 const mapPins = map.querySelector(`.map__pins`);
 
+const mapFilters = map.querySelector(`.map__filters`);
+const adForm = document.querySelector(`.ad-form`);
+
+const mapPinMain = mapPins.querySelector(`.map__pin--main`);
+const mapPinMainMiddle = Math.ceil(mapPinMain.clientWidth * 0.50);
+const mapPinMainBottom = mapPinMain.clientWidth + 16;
+
+const roomNumber = adForm.querySelector(`#room_number`);
+const capacity = adForm.querySelector(`#capacity`);
+
 const getRandomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 const getRandomInt = (min, max) => {
@@ -86,7 +96,7 @@ const renderPin = (data) => {
   return pin;
 };
 
-const renderCard = (data) => {
+/* const renderCard = (data) => {
   const appartmentsType = {
     flat: `Квартира`,
     bungalow: `Бунгало`,
@@ -154,7 +164,7 @@ const renderCard = (data) => {
   }
 
   return card;
-};
+};*/
 
 const createPins = (arr) => {
   const pinsFragment = document.createDocumentFragment();
@@ -165,17 +175,81 @@ const createPins = (arr) => {
   return mapPins.appendChild(pinsFragment);
 };
 
-const createCard = (arr) => {
+/* const createCard = (arr) => {
   const mapFilters = map.querySelector(`.map__filters-container`);
   const cardsFragment = document.createDocumentFragment();
   cardsFragment.appendChild(renderCard(arr[0]));
 
   return map.insertBefore(cardsFragment, mapFilters);
+};*/
+
+const formActivation = (form, enable) => {
+  const elements = form.querySelectorAll(`fieldset, select`);
+
+  if (enable === false) {
+    for (let i = 0; i < elements.length; i++) {
+      elements[i].setAttribute(`disabled`, `disabled`);
+    }
+  } else {
+    for (let j = 0; j < elements.length; j++) {
+      elements[j].removeAttribute(`disabled`);
+    }
+  }
+
+  return;
 };
 
-map.classList.remove(`map--faded`);
+const getMainPinCoords = (x, y) => {
+  const address = adForm.querySelector(`#address`);
+  const pinCoords = `${parseInt(mapPinMain.style.left, 10) + x}, ${parseInt(mapPinMain.style.top, 10) + y}`;
+  address.value = pinCoords;
+
+  return;
+};
+
+const roomsValidation = () => {
+  const capacityValue = Number(capacity.value);
+  const roomsValue = Number(roomNumber.value);
+
+  if ((capacityValue <= roomsValue && roomsValue !== 100 && capacityValue !== 0) || (roomsValue === 100 && capacityValue === 0)) {
+    capacity.setCustomValidity(``);
+  } else {
+    capacity.setCustomValidity(`Измените количество комнат или гостей`);
+  }
+
+  capacity.reportValidity();
+};
+
+const pageActivation = () => {
+  map.classList.remove(`map--faded`);
+  adForm.classList.remove(`ad-form--disabled`);
+
+  getMainPinCoords(mapPinMainMiddle, mapPinMainBottom);
+  createPins(generatedMocks);
+  formActivation(mapFilters, true);
+  formActivation(adForm, true);
+  roomsValidation();
+
+  capacity.addEventListener(`input`, roomsValidation);
+  roomNumber.addEventListener(`input`, roomsValidation);
+};
+
+mapPinMain.addEventListener(`mousedown`, (evt) => {
+  if (evt.which === 1) {
+    pageActivation();
+  }
+});
+
+mapPinMain.addEventListener(`keydown`, (evt) => {
+  if (evt.key === `Enter`) {
+    pageActivation();
+  }
+});
 
 const generatedMocks = generateMock();
 
-createPins(generatedMocks);
-createCard(generatedMocks);
+getMainPinCoords(mapPinMainMiddle, mapPinMainMiddle);
+formActivation(mapFilters, false);
+formActivation(adForm, false);
+
+// createCard(generatedMocks);
