@@ -38,8 +38,13 @@ const mapPinMain = mapPins.querySelector(`.map__pin--main`);
 const mapPinMainMiddle = Math.ceil(mapPinMain.clientWidth * 0.50);
 const mapPinMainBottom = mapPinMain.clientWidth + 16;
 
+const houseType = adForm.querySelector(`#type`);
+
 const roomNumber = adForm.querySelector(`#room_number`);
 const capacity = adForm.querySelector(`#capacity`);
+
+const timeIn = adForm.querySelector(`#timein`);
+const timeOut = adForm.querySelector(`#timeout`);
 
 const getRandomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
@@ -73,8 +78,8 @@ const generateMock = () => {
         'photos': cutArray(PHOTOS)
       },
       'location': {
-        'x': getRandomInt(mapPins.clientWidth - 260, 130),
-        'y': getRandomInt(130, 640)
+        'x': getRandomInt(0, mapPins.clientWidth),
+        'y': getRandomInt(130, 630)
       }
     };
     generatedMock.push(object);
@@ -96,7 +101,7 @@ const renderPin = (data) => {
   return pin;
 };
 
-/* const renderCard = (data) => {
+const renderCard = (data, pin) => {
   const appartmentsType = {
     flat: `Квартира`,
     bungalow: `Бунгало`,
@@ -133,17 +138,20 @@ const renderPin = (data) => {
   };
 
   createTextElement(popupTitle, !data.offer.title, data.offer.title);
-  createTextElement(popupAddress, !data.offer.address, data.offer.address);
   createTextElement(popupPrice, !data.offer.price, `${data.offer.price} ₽/ночь`);
   createTextElement(popupType, !data.offer.type, appartmentsType[data.offer.type]);
   createTextElement(popupCapacity, !data.offer.rooms && !data.offer.guests, `${data.offer.rooms} комнаты для ${data.offer.guests} гостей`);
   createTextElement(popupTime, !data.offer.checkin && !data.offer.checkout, `Заезд после ${data.offer.checkin}, выезд до ${data.offer.checkout}`);
   createTextElement(popupDescription, !data.offer.description, data.offer.description);
 
-  if (!data.author.avatar) {
-    popupAvatar.remove();
+  if (pin.matches(`.map__pin`)) {
+    popupAvatar.src = pin.querySelector(`img`).src;
+    createTextElement(popupAddress, !data.offer.address, `${parseInt(pin.style.left, 10)}, ${parseInt(pin.style.top, 10)}`);
+  } else if (pin.src) {
+    popupAvatar.src = pin.src;
+    createTextElement(popupAddress, !data.offer.address, `${parseInt(pin.parentNode.style.left, 10)}, ${parseInt(pin.parentNode.style.top, 10)}`);
   } else {
-    popupAvatar.src = data.author.avatar;
+    popupAvatar.remove();
   }
 
   for (let i = 0; i < data.offer.features.length; i++) {
@@ -156,7 +164,7 @@ const renderPin = (data) => {
   }
 
   for (let i = 0; i < data.offer.photos.length; i++) {
-    if (!data.offer.features) {
+    if (!data.offer.photos) {
       popupImages.remove();
     } else {
       popupImages.insertAdjacentHTML(`beforeend`, `<img src="${data.offer.photos[i]}" class="popup__photo" width="45" height="40" alt="Фотография жилья">`);
@@ -164,7 +172,7 @@ const renderPin = (data) => {
   }
 
   return card;
-};*/
+};
 
 const createPins = (arr) => {
   const pinsFragment = document.createDocumentFragment();
@@ -175,13 +183,43 @@ const createPins = (arr) => {
   return mapPins.appendChild(pinsFragment);
 };
 
-/* const createCard = (arr) => {
-  const mapFilters = map.querySelector(`.map__filters-container`);
+const createCard = (arr, pin) => {
+  const mapFiltersContainer = map.querySelector(`.map__filters-container`);
   const cardsFragment = document.createDocumentFragment();
-  cardsFragment.appendChild(renderCard(arr[0]));
+  const randomCard = arr[getRandomInt(0, arr.length - 1)];
 
-  return map.insertBefore(cardsFragment, mapFilters);
-};*/
+  cardsFragment.appendChild(renderCard(randomCard, pin));
+
+  return map.insertBefore(cardsFragment, mapFiltersContainer);
+};
+
+const cardOpen = (evt) => {
+  const cardClose = () => {
+    const popup = map.querySelector(`.popup`);
+    if (popup !== null) {
+      popup.remove();
+    }
+    return;
+  };
+
+  if (evt.target.type === `button` || evt.target.parentNode.type === `button`) {
+    cardClose();
+    createCard(generatedMocks, evt.target);
+
+    map.addEventListener(`click`, (e) => {
+      if (e.target.matches(`.popup__close`)) {
+        cardClose();
+      }
+    });
+
+    document.addEventListener(`keydown`, (e) => {
+      if (e.key === `Escape`) {
+        cardClose();
+      }
+    });
+  }
+  return;
+};
 
 const formActivation = (form, enable) => {
   const elements = form.querySelectorAll(`fieldset, select`);
@@ -220,18 +258,63 @@ const roomsValidation = () => {
   capacity.reportValidity();
 };
 
+
+const houseTypeValidation = () => {
+  const price = adForm.querySelector(`#price`);
+  if (houseType.value === `bungalow`) {
+    price.min = 0;
+    price.placeholder = `0`;
+  } else if (houseType.value === `flat`) {
+    price.min = 1000;
+    price.placeholder = `1000`;
+  } else if (houseType.value === `house`) {
+    price.min = 5000;
+    price.placeholder = `5000`;
+  } else {
+    price.min = 10000;
+    price.placeholder = `10000`;
+  }
+
+  return;
+};
+
+const timeInValidation = () => {
+  if (timeIn.value !== timeOut.value) {
+    timeIn.value = timeOut.value;
+  }
+
+  return;
+};
+
+const timeOutValidation = () => {
+  if (timeOut.value !== timeIn.value) {
+    timeOut.value = timeIn.value;
+  }
+
+  return;
+};
+
 const pageActivation = () => {
   map.classList.remove(`map--faded`);
   adForm.classList.remove(`ad-form--disabled`);
 
   getMainPinCoords(mapPinMainMiddle, mapPinMainBottom);
-  createPins(generatedMocks);
   formActivation(mapFilters, true);
   formActivation(adForm, true);
+  createPins(generatedMocks);
   roomsValidation();
 
+  timeIn.addEventListener(`input`, timeOutValidation);
+  timeOut.addEventListener(`input`, timeInValidation);
+  houseType.addEventListener(`input`, houseTypeValidation);
   capacity.addEventListener(`input`, roomsValidation);
   roomNumber.addEventListener(`input`, roomsValidation);
+  map.addEventListener(`click`, cardOpen);
+  map.addEventListener(`keydown`, (evt) => {
+    if (evt.key === `Enter` && evt.target.type === `button`) {
+      cardOpen(evt);
+    }
+  });
 };
 
 mapPinMain.addEventListener(`mousedown`, (evt) => {
@@ -251,5 +334,3 @@ const generatedMocks = generateMock();
 getMainPinCoords(mapPinMainMiddle, mapPinMainMiddle);
 formActivation(mapFilters, false);
 formActivation(adForm, false);
-
-// createCard(generatedMocks);
