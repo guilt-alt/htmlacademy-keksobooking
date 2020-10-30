@@ -25,7 +25,7 @@
     return;
   };
 
-  const pageActivation = () => {
+  const events = () => {
     map.classList.remove(`map--faded`);
     adForm.classList.remove(`ad-form--disabled`);
 
@@ -40,23 +40,23 @@
     window.util.houseType.addEventListener(`input`, window.validation.houseTypeValidation);
     window.util.capacity.addEventListener(`input`, window.validation.roomsValidation);
     window.util.roomNumber.addEventListener(`input`, window.validation.roomsValidation);
-    map.addEventListener(`click`, window.cardOpen.cardOpen);
+    map.addEventListener(`click`, window.cards.cardOpen);
     map.addEventListener(`keydown`, (evt) => {
       if (evt.key === `Enter` && evt.target.type === `button`) {
-        window.cardOpen.cardOpen(evt);
+        window.cards.cardOpen(evt);
       }
     });
   };
 
   mapPinMain.addEventListener(`mousedown`, (evt) => {
     if (evt.which === 1) {
-      pageActivation();
+      events();
     }
   });
 
   mapPinMain.addEventListener(`keydown`, (evt) => {
     if (evt.key === `Enter`) {
-      pageActivation();
+      events();
     }
   });
 

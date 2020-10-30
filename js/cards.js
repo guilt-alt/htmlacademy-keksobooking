@@ -1,6 +1,8 @@
 'use strict';
 
 (() => {
+  const map = window.util.map;
+
   const renderCard = (data, pin) => {
     const appartmentsType = {
       flat: `Квартира`,
@@ -75,7 +77,6 @@
   };
 
   const createCard = (arr, pin) => {
-    const map = window.util.map;
     const mapFiltersContainer = map.querySelector(`.map__filters-container`);
     const cardsFragment = document.createDocumentFragment();
     const randomCard = arr[window.util.getRandomInt(0, arr.length - 1)];
@@ -85,7 +86,35 @@
     return map.insertBefore(cardsFragment, mapFiltersContainer);
   };
 
+  const cardOpen = (evt) => {
+    const cardClose = () => {
+      const popup = map.querySelector(`.popup`);
+      if (popup !== null) {
+        popup.remove();
+      }
+      return;
+    };
+
+    if (evt.target.type === `button` || evt.target.parentNode.type === `button`) {
+      cardClose();
+      createCard(window.mocks.generateMock(), evt.target);
+
+      map.addEventListener(`click`, (e) => {
+        if (e.target.matches(`.popup__close`)) {
+          cardClose();
+        }
+      });
+
+      document.addEventListener(`keydown`, (e) => {
+        if (e.key === `Escape`) {
+          cardClose();
+        }
+      });
+    }
+    return;
+  };
+
   window.cards = {
-    createCard
+    cardOpen
   };
 })();
