@@ -26,13 +26,15 @@
   };
 
   const events = () => {
+    if (map.classList.contains(`map--faded`)) {
+      window.pins.createPins(generatedMocks);
+    }
+
     map.classList.remove(`map--faded`);
     adForm.classList.remove(`ad-form--disabled`);
 
-    window.validation.getMainPinCoords();
     formActivation(mapFilters, true);
     formActivation(adForm, true);
-    window.pins.createPins(generatedMocks);
     window.validation.roomsValidation();
 
     window.util.timeIn.addEventListener(`input`, window.validation.timeOutValidation);

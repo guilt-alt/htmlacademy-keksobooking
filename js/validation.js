@@ -58,12 +58,12 @@
     return;
   };
 
-  const getMainPinCoords = () => {
+  const getMainPinCoords = (x, y) => {
     const mapPinMain = window.util.mapPinMain;
     const mapPinMainMiddle = Math.ceil(mapPinMain.clientWidth * 0.50);
     const mapPinMainBottom = mapPinMain.clientWidth + 16;
     const address = adForm.querySelector(`#address`);
-    const pinCoords = `${parseInt(mapPinMain.style.left, 10) + mapPinMainMiddle}, ${parseInt(mapPinMain.style.top, 10) + mapPinMainBottom}`;
+    const pinCoords = `${parseInt(x, 10) + mapPinMainMiddle}, ${parseInt(y, 10) + mapPinMainBottom}`;
     address.value = pinCoords;
 
     return;
