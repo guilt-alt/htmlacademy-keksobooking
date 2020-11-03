@@ -4,7 +4,7 @@
   const map = window.util.map;
   const mapPinMain = window.util.mapPinMain;
 
-  const pin = {
+  const movePin = {
     mapX: map.querySelector(`.map__pins`).clientWidth,
 
     mapMinY: 130,
@@ -17,7 +17,7 @@
     mouseLimitBottom: 590
   };
 
-  const dialogHandleMove = function (evt) {
+  const mainPinHandleMove = function (evt) {
     evt.preventDefault();
 
     const onMouseMove = function (moveEvt) {
@@ -27,19 +27,19 @@
       const mouseY = moveEvt.pageY - map.offsetTop;
 
       if (mouseX <= 0) {
-        mapPinMain.style.left = `${-pin.pinWidthHalf}px`;
-      } else if (mouseX >= pin.mapX) {
-        mapPinMain.style.left = `${pin.mapX - pin.pinWidthHalf}px`;
+        mapPinMain.style.left = `${-movePin.pinWidthHalf}px`;
+      } else if (mouseX >= movePin.mapX) {
+        mapPinMain.style.left = `${movePin.mapX - movePin.pinWidthHalf}px`;
       } else {
-        mapPinMain.style.left = `${mouseX - pin.pinWidthHalf}px`;
+        mapPinMain.style.left = `${mouseX - movePin.pinWidthHalf}px`;
       }
 
-      if (mouseY <= pin.mouseLimitTop) {
-        mapPinMain.style.top = `${pin.mapMinY}px`;
-      } else if (mouseY >= pin.mouseLimitBottom) {
-        mapPinMain.style.top = `${pin.mapMaxY - pin.pinHeight}px`;
+      if (mouseY <= movePin.mouseLimitTop) {
+        mapPinMain.style.top = `${movePin.mapMinY}px`;
+      } else if (mouseY >= movePin.mouseLimitBottom) {
+        mapPinMain.style.top = `${movePin.mapMaxY - movePin.pinHeight}px`;
       } else {
-        mapPinMain.style.top = `${mouseY - pin.pinWidthHalf}px`;
+        mapPinMain.style.top = `${mouseY - movePin.pinWidthHalf}px`;
       }
 
       window.validation.getMainPinCoords(mapPinMain.style.left, mapPinMain.style.top);
@@ -57,5 +57,5 @@
     document.addEventListener(`mouseup`, onMouseUp);
   };
 
-  mapPinMain.addEventListener(`mousedown`, dialogHandleMove);
+  mapPinMain.addEventListener(`mousedown`, mainPinHandleMove);
 }());
