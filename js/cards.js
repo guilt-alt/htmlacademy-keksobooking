@@ -3,7 +3,7 @@
 (() => {
   const map = window.util.map;
 
-  const renderCard = (data, pin) => {
+  const renderCard = (data) => {
     const appartmentsType = {
       flat: `Квартира`,
       bungalow: `Бунгало`,
@@ -45,15 +45,12 @@
     createTextElement(popupCapacity, !data.offer.rooms && !data.offer.guests, `${data.offer.rooms} комнаты для ${data.offer.guests} гостей`);
     createTextElement(popupTime, !data.offer.checkin && !data.offer.checkout, `Заезд после ${data.offer.checkin}, выезд до ${data.offer.checkout}`);
     createTextElement(popupDescription, !data.offer.description, data.offer.description);
+    createTextElement(popupAddress, !data.offer.address, data.offer.address);
 
-    if (pin.matches(`.map__pin`)) {
-      popupAvatar.src = pin.querySelector(`img`).src;
-      createTextElement(popupAddress, !data.offer.address, `${parseInt(pin.style.left, 10)}, ${parseInt(pin.style.top, 10)}`);
-    } else if (pin.src) {
-      popupAvatar.src = pin.src;
-      createTextElement(popupAddress, !data.offer.address, `${parseInt(pin.parentNode.style.left, 10)}, ${parseInt(pin.parentNode.style.top, 10)}`);
-    } else {
+    if (!data.author.avatar) {
       popupAvatar.remove();
+    } else {
+      popupAvatar.src = data.author.avatar;
     }
 
     for (let i = 0; i < data.offer.features.length; i++) {
@@ -76,13 +73,16 @@
     return card;
   };
 
-  const createCard = (arr, pin) => {
+  const createCard = (data, pin) => {
     const mapFiltersContainer = map.querySelector(`.map__filters-container`);
+    const pins = document.querySelectorAll(`.map__pin`);
     const cardsFragment = document.createDocumentFragment();
-    const randomCard = arr[window.util.getRandomInt(0, arr.length - 1)];
 
-    cardsFragment.appendChild(renderCard(randomCard, pin));
-
+    for (let i = 1; i < pins.length; i++) {
+      if (pins[i] === pin || pins[i] === pin.parentNode) {
+        cardsFragment.appendChild(renderCard(data[i - 1], pin));
+      }
+    }
     return map.insertBefore(cardsFragment, mapFiltersContainer);
   };
 
@@ -97,7 +97,7 @@
 
     if (evt.target.type === `button` || evt.target.parentNode.type === `button`) {
       cardClose();
-      createCard(window.mocks.generateMock(), evt.target);
+      createCard(window.pins.data, evt.target);
 
       map.addEventListener(`click`, (e) => {
         if (e.target.matches(`.popup__close`)) {

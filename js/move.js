@@ -1,6 +1,6 @@
 'use strict';
 
-(function () {
+(() => {
   const map = window.util.map;
   const mapPinMain = window.util.mapPinMain;
 
@@ -17,10 +17,10 @@
     mouseLimitBottom: 590
   };
 
-  const mainPinHandleMove = function (evt) {
+  const mainPinHandleMove = (evt) => {
     evt.preventDefault();
 
-    const onMouseMove = function (moveEvt) {
+    const onMouseMove = (moveEvt) => {
       moveEvt.preventDefault();
 
       const mouseX = moveEvt.pageX - map.offsetLeft;
@@ -45,7 +45,7 @@
       window.validation.getMainPinCoords(mapPinMain.style.left, mapPinMain.style.top);
     };
 
-    const onMouseUp = function (upEvt) {
+    const onMouseUp = (upEvt) => {
       upEvt.preventDefault();
 
       window.validation.getMainPinCoords(mapPinMain.style.left, mapPinMain.style.top);
@@ -58,4 +58,4 @@
   };
 
   mapPinMain.addEventListener(`mousedown`, mainPinHandleMove);
-}());
+})();
