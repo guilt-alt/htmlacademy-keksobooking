@@ -7,17 +7,30 @@
   };
   const TIMEOUT_IN_MS = 10000;
 
-  const errorServerFragment = (onError) => {
+  const loadErrMessage = (onError) => {
     const node = document.createElement(`div`);
-    node.style = `z-index: 100; padding: 30px; max-width: 100%; text-align: center; background-color: #CD5C5C; color: white; border-radius: 5px;`;
-    node.style.position = `absolute`;
-    node.style.top = `50%`;
-    node.style.left = `50%`;
-    node.style.transform = `translate(-50%, -50%)`;
-    node.style.fontSize = `30px`;
+    node.classList.add(`load-err`);
+    node.style = `position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      padding: 30px; max-width: 100%;
+      font-size: 30px; text-align: center; background-color: #CD5C5C; color: white;
+      border-radius: 5px;
+      z-index: 100;`;
 
     node.textContent = onError;
-    document.body.insertAdjacentElement(`afterbegin`, node);
+    document.body.appendChild(node);
+
+    const removeLoadErrMessage = () => {
+      document.querySelector(`.load-err`).remove();
+      document.removeEventListener(`mousedown`, removeLoadErrMessage);
+      document.removeEventListener(`keydown`, (evt) => {
+        window.util.onEscPress(evt, removeLoadErrMessage);
+      });
+    };
+
+    document.addEventListener(`mousedown`, removeLoadErrMessage);
+    document.addEventListener(`keydown`, (evt) => {
+      window.util.onEscPress(evt, removeLoadErrMessage);
+    });
   };
 
   const errorHandler = (xhr, onLoad, onError) => {
@@ -49,8 +62,17 @@
     xhr.send();
   };
 
+  const onLoadHandler = (data) => {
+    window.onLoad = {
+      data
+    };
+
+    window.pins.createPins(window.onLoad.data);
+  };
+
   window.backend = {
     load,
-    errorServerFragment
+    onLoadHandler,
+    loadErrMessage
   };
 })();

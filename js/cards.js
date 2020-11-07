@@ -73,31 +73,27 @@
     return card;
   };
 
-  const createCard = (data, pin) => {
+  const createCard = (data) => {
     const mapFiltersContainer = map.querySelector(`.map__filters-container`);
-    const pins = document.querySelectorAll(`.map__pin`);
     const cardsFragment = document.createDocumentFragment();
 
-    for (let i = 1; i < pins.length; i++) {
-      if (pins[i] === pin || pins[i] === pin.parentNode) {
-        cardsFragment.appendChild(renderCard(data[i - 1], pin));
-      }
-    }
+    cardsFragment.appendChild(renderCard(data));
     return map.insertBefore(cardsFragment, mapFiltersContainer);
   };
 
   const cardOpen = (evt) => {
-    const cardClose = () => {
-      const popup = map.querySelector(`.popup`);
-      if (popup !== null) {
-        popup.remove();
-      }
-      return;
-    };
+    let data = [];
+    const pinMatches = `.map__pin:not(.map__pin--main)`;
+    const pins = map.querySelectorAll(`.map__pin:not(.map__pin--main)`);
 
-    if (evt.target.type === `button` || evt.target.parentNode.type === `button`) {
+    if (evt.target.matches(pinMatches) || evt.target.parentNode.matches(pinMatches)) {
       cardClose();
-      createCard(window.pins.data, evt.target);
+      for (let i = 0; i < pins.length; i++) {
+        if (pins[i] === evt.target || pins[i] === evt.target.parentNode) {
+          data = window.onLoad.data[i];
+        }
+      }
+      createCard(data);
 
       map.addEventListener(`click`, (e) => {
         if (e.target.matches(`.popup__close`)) {
@@ -110,6 +106,14 @@
           cardClose();
         }
       });
+    }
+    return;
+  };
+
+  const cardClose = () => {
+    const popup = map.querySelector(`.popup`);
+    if (popup !== null) {
+      popup.remove();
     }
     return;
   };

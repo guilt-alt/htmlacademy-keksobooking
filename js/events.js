@@ -27,7 +27,7 @@
 
   const events = () => {
     if (map.classList.contains(`map--faded`)) {
-      window.backend.load(window.pins.createPins, window.backend.errorServerFragment);
+      window.backend.load(window.backend.onLoadHandler, window.backend.loadErrMessage);
     }
 
     map.classList.remove(`map--faded`);
@@ -44,7 +44,7 @@
     window.util.roomNumber.addEventListener(`input`, window.validation.roomsValidation);
     map.addEventListener(`click`, window.cards.cardOpen);
     map.addEventListener(`keydown`, (evt) => {
-      if (evt.key === `Enter` && evt.target.matches(`popup__close`)) {
+      if (evt.key === `Enter`) {
         window.cards.cardOpen(evt);
       }
     });
