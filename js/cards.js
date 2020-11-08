@@ -84,12 +84,12 @@
   const cardOpen = (evt) => {
     let data = [];
     const pinMatches = `.map__pin:not(.map__pin--main)`;
-    const pins = map.querySelectorAll(`.map__pin:not(.map__pin--main)`);
+    const pinsList = map.querySelectorAll(`.map__pin:not(.map__pin--main)`);
 
     if (evt.target.matches(pinMatches) || evt.target.parentNode.matches(pinMatches)) {
       cardClose();
-      for (let i = 0; i < pins.length; i++) {
-        if (pins[i] === evt.target || pins[i] === evt.target.parentNode) {
+      for (let i = 0; i < pinsList.length; i++) {
+        if (pinsList[i] === evt.target || pinsList[i] === evt.target.parentNode) {
           data = window.onLoad.data[i];
         }
       }
@@ -119,6 +119,7 @@
   };
 
   window.cards = {
-    cardOpen
+    cardOpen,
+    cardClose
   };
 })();

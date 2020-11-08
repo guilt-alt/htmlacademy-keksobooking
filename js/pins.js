@@ -28,7 +28,15 @@
     return window.util.mapPins.appendChild(pinsFragment);
   };
 
+  const removePins = () => {
+    const pinsList = document.querySelectorAll(`.map__pin:not(.map__pin--main)`);
+    for (let i = 0; i < pinsList.length; i++) {
+      pinsList[i].remove();
+    }
+  };
+
   window.pins = {
-    createPins
+    createPins,
+    removePins
   };
 })();

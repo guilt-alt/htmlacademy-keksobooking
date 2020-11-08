@@ -25,9 +25,9 @@
     return;
   };
 
-  const events = () => {
+  const addEvents = () => {
     if (map.classList.contains(`map--faded`)) {
-      window.backend.load(window.backend.onLoadHandler, window.backend.loadErrMessage);
+      window.backend.load(window.backend.onLoadHandler, window.messages.loadErrorMessage);
     }
 
     map.classList.remove(`map--faded`);
@@ -35,13 +35,12 @@
 
     formActivation(mapFilters, true);
     formActivation(adForm, true);
-    window.validation.roomsValidation();
+    window.validation.addValidation();
+    adForm.addEventListener(`submit`, (evt) => {
+      window.backend.adFormSave(evt);
+    });
+    adForm.addEventListener(`reset`, removeEvents);
 
-    window.util.timeIn.addEventListener(`input`, window.validation.timeOutValidation);
-    window.util.timeOut.addEventListener(`input`, window.validation.timeInValidation);
-    window.util.houseType.addEventListener(`input`, window.validation.houseTypeValidation);
-    window.util.capacity.addEventListener(`input`, window.validation.roomsValidation);
-    window.util.roomNumber.addEventListener(`input`, window.validation.roomsValidation);
     map.addEventListener(`click`, window.cards.cardOpen);
     map.addEventListener(`keydown`, (evt) => {
       if (evt.key === `Enter`) {
@@ -50,18 +49,46 @@
     });
   };
 
+  const removeEvents = () => {
+    window.pins.removePins();
+    window.cards.cardClose();
+
+    map.classList.add(`map--faded`);
+    adForm.classList.add(`ad-form--disabled`);
+    mapPinMain.style = `left: 570px;top: 375px;`;
+
+    formActivation(mapFilters, false);
+    formActivation(adForm, false);
+    window.validation.removeValidation();
+    adForm.removeEventListener(`submit`, (evt) => {
+      window.backend.adFormSave(evt, removeEvents);
+    });
+    adForm.removeEventListener(`reset`, removeEvents);
+
+    map.removeEventListener(`click`, window.cards.cardOpen);
+    map.removeEventListener(`keydown`, (evt) => {
+      if (evt.key === `Enter`) {
+        window.cards.cardOpen(evt);
+      }
+    });
+  };
+
   mapPinMain.addEventListener(`mousedown`, (evt) => {
     if (evt.which === 1) {
-      events();
+      addEvents();
     }
   });
 
   mapPinMain.addEventListener(`keydown`, (evt) => {
     if (evt.key === `Enter`) {
-      events();
+      addEvents();
     }
   });
 
   formActivation(mapFilters, false);
   formActivation(adForm, false);
+
+  window.events = {
+    removeEvents
+  };
 })();
