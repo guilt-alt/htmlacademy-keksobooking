@@ -18,6 +18,13 @@
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
+  const onEscPress = (evt, action) => {
+    if (evt.key === `Escape`) {
+      evt.preventDefault();
+      action();
+    }
+  };
+
   window.util = {
     map,
     mapPins,
@@ -28,6 +35,7 @@
     capacity,
     timeIn,
     timeOut,
-    getRandomInt
+    getRandomInt,
+    onEscPress
   };
 })();

@@ -7,7 +7,7 @@
   const mapFilters = map.querySelector(`.map__filters`);
   const adForm = window.util.adForm;
 
-  const generatedMocks = window.mocks.generateMock();
+  // const generatedMocks = window.mocks.generateMock();
 
   const formActivation = (form, enable) => {
     const elements = form.querySelectorAll(`fieldset, select`);
@@ -27,7 +27,7 @@
 
   const events = () => {
     if (map.classList.contains(`map--faded`)) {
-      window.pins.createPins(generatedMocks);
+      window.backend.load(window.backend.onLoadHandler, window.backend.loadErrMessage);
     }
 
     map.classList.remove(`map--faded`);
@@ -44,7 +44,7 @@
     window.util.roomNumber.addEventListener(`input`, window.validation.roomsValidation);
     map.addEventListener(`click`, window.cards.cardOpen);
     map.addEventListener(`keydown`, (evt) => {
-      if (evt.key === `Enter` && evt.target.type === `button`) {
+      if (evt.key === `Enter`) {
         window.cards.cardOpen(evt);
       }
     });

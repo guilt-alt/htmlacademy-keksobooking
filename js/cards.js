@@ -3,7 +3,7 @@
 (() => {
   const map = window.util.map;
 
-  const renderCard = (data, pin) => {
+  const renderCard = (data) => {
     const appartmentsType = {
       flat: `Квартира`,
       bungalow: `Бунгало`,
@@ -45,15 +45,12 @@
     createTextElement(popupCapacity, !data.offer.rooms && !data.offer.guests, `${data.offer.rooms} комнаты для ${data.offer.guests} гостей`);
     createTextElement(popupTime, !data.offer.checkin && !data.offer.checkout, `Заезд после ${data.offer.checkin}, выезд до ${data.offer.checkout}`);
     createTextElement(popupDescription, !data.offer.description, data.offer.description);
+    createTextElement(popupAddress, !data.offer.address, data.offer.address);
 
-    if (pin.matches(`.map__pin`)) {
-      popupAvatar.src = pin.querySelector(`img`).src;
-      createTextElement(popupAddress, !data.offer.address, `${parseInt(pin.style.left, 10)}, ${parseInt(pin.style.top, 10)}`);
-    } else if (pin.src) {
-      popupAvatar.src = pin.src;
-      createTextElement(popupAddress, !data.offer.address, `${parseInt(pin.parentNode.style.left, 10)}, ${parseInt(pin.parentNode.style.top, 10)}`);
-    } else {
+    if (!data.author.avatar) {
       popupAvatar.remove();
+    } else {
+      popupAvatar.src = data.author.avatar;
     }
 
     for (let i = 0; i < data.offer.features.length; i++) {
@@ -76,28 +73,27 @@
     return card;
   };
 
-  const createCard = (arr, pin) => {
+  const createCard = (data) => {
     const mapFiltersContainer = map.querySelector(`.map__filters-container`);
     const cardsFragment = document.createDocumentFragment();
-    const randomCard = arr[window.util.getRandomInt(0, arr.length - 1)];
 
-    cardsFragment.appendChild(renderCard(randomCard, pin));
-
+    cardsFragment.appendChild(renderCard(data));
     return map.insertBefore(cardsFragment, mapFiltersContainer);
   };
 
   const cardOpen = (evt) => {
-    const cardClose = () => {
-      const popup = map.querySelector(`.popup`);
-      if (popup !== null) {
-        popup.remove();
-      }
-      return;
-    };
+    let data = [];
+    const pinMatches = `.map__pin:not(.map__pin--main)`;
+    const pins = map.querySelectorAll(`.map__pin:not(.map__pin--main)`);
 
-    if (evt.target.type === `button` || evt.target.parentNode.type === `button`) {
+    if (evt.target.matches(pinMatches) || evt.target.parentNode.matches(pinMatches)) {
       cardClose();
-      createCard(window.mocks.generateMock(), evt.target);
+      for (let i = 0; i < pins.length; i++) {
+        if (pins[i] === evt.target || pins[i] === evt.target.parentNode) {
+          data = window.onLoad.data[i];
+        }
+      }
+      createCard(data);
 
       map.addEventListener(`click`, (e) => {
         if (e.target.matches(`.popup__close`)) {
@@ -110,6 +106,14 @@
           cardClose();
         }
       });
+    }
+    return;
+  };
+
+  const cardClose = () => {
+    const popup = map.querySelector(`.popup`);
+    if (popup !== null) {
+      popup.remove();
     }
     return;
   };
