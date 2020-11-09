@@ -5,6 +5,7 @@
   const mapPins = map.querySelector(`.map__pins`);
   const mapPinMain = mapPins.querySelector(`.map__pin--main`);
 
+  const mapFilters = map.querySelector(`.map__filters`);
   const adForm = document.querySelector(`.ad-form`);
   const houseType = adForm.querySelector(`#type`);
   const roomNumber = adForm.querySelector(`#room_number`);
@@ -29,6 +30,7 @@
     map,
     mapPins,
     mapPinMain,
+    mapFilters,
     adForm,
     houseType,
     roomNumber,

@@ -4,7 +4,7 @@
   const map = window.util.map;
   const mapPinMain = window.util.mapPinMain;
 
-  const mapFilters = map.querySelector(`.map__filters`);
+  const mapFilters = window.util.mapFilters;
   const adForm = window.util.adForm;
 
   // const generatedMocks = window.mocks.generateMock();
@@ -27,7 +27,7 @@
 
   const addEvents = () => {
     if (map.classList.contains(`map--faded`)) {
-      window.backend.load(window.backend.onLoadHandler, window.messages.loadErrorMessage);
+      window.backend.load(window.filter.onLoadHandler, window.messages.loadErrorMessage);
     }
 
     map.classList.remove(`map--faded`);
