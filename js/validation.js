@@ -6,9 +6,12 @@
   const timeIn = window.util.timeIn;
   const timeOut = window.util.timeOut;
 
+  const houseType = window.util.houseType;
+  const price = adForm.querySelector(`#price`);
+  const roomNumber = window.util.roomNumber;
+  const capacity = window.util.capacity;
+
   const roomsValidation = () => {
-    const roomNumber = window.util.roomNumber;
-    const capacity = window.util.capacity;
     const capacityValue = Number(capacity.value);
     const roomsValue = Number(roomNumber.value);
 
@@ -21,10 +24,7 @@
     capacity.reportValidity();
   };
 
-
   const houseTypeValidation = () => {
-    const houseType = window.util.houseType;
-    const price = adForm.querySelector(`#price`);
     if (houseType.value === `bungalow`) {
       price.min = 0;
       price.placeholder = `0`;
@@ -58,6 +58,24 @@
     return;
   };
 
+  const addValidation = () => {
+    roomsValidation();
+    timeIn.addEventListener(`input`, timeOutValidation);
+    timeOut.addEventListener(`input`, timeInValidation);
+    houseType.addEventListener(`input`, houseTypeValidation);
+    capacity.addEventListener(`input`, roomsValidation);
+    roomNumber.addEventListener(`input`, roomsValidation);
+  };
+
+  const removeValidation = () => {
+    price.placeholder = `1000`;
+    timeIn.removeEventListener(`input`, timeOutValidation);
+    timeOut.removeEventListener(`input`, timeInValidation);
+    houseType.removeEventListener(`input`, houseTypeValidation);
+    capacity.removeEventListener(`input`, roomsValidation);
+    roomNumber.removeEventListener(`input`, roomsValidation);
+  };
+
   const getMainPinCoords = (x, y) => {
     const mapPinMain = window.util.mapPinMain;
     const mapPinMainMiddle = Math.ceil(mapPinMain.clientWidth * 0.50);
@@ -70,10 +88,8 @@
   };
 
   window.validation = {
-    roomsValidation,
-    houseTypeValidation,
-    timeInValidation,
-    timeOutValidation,
+    addValidation,
+    removeValidation,
     getMainPinCoords
   };
 })();

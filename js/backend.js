@@ -2,36 +2,11 @@
 
 (() => {
   const LOAD_URL = `https://21.javascript.pages.academy/keksobooking/data`;
+  const SEND_URL = `https://21.javascript.pages.academy/keksobooking`;
   const STATUS_CODE = {
     OK: 200
   };
   const TIMEOUT_IN_MS = 10000;
-
-  const loadErrMessage = (onError) => {
-    const node = document.createElement(`div`);
-    node.classList.add(`load-err`);
-    node.style = `position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      padding: 30px; max-width: 100%;
-      font-size: 30px; text-align: center; background-color: #CD5C5C; color: white;
-      border-radius: 5px;
-      z-index: 100;`;
-
-    node.textContent = onError;
-    document.body.appendChild(node);
-
-    const removeLoadErrMessage = () => {
-      document.querySelector(`.load-err`).remove();
-      document.removeEventListener(`mousedown`, removeLoadErrMessage);
-      document.removeEventListener(`keydown`, (evt) => {
-        window.util.onEscPress(evt, removeLoadErrMessage);
-      });
-    };
-
-    document.addEventListener(`mousedown`, removeLoadErrMessage);
-    document.addEventListener(`keydown`, (evt) => {
-      window.util.onEscPress(evt, removeLoadErrMessage);
-    });
-  };
 
   const errorHandler = (xhr, onLoad, onError) => {
     xhr.responseType = `json`;
@@ -70,9 +45,22 @@
     window.pins.createPins(window.onLoad.data);
   };
 
+  const save = (data, onSuccess, onError) => {
+    const xhr = new XMLHttpRequest();
+
+    errorHandler(xhr, onSuccess, onError);
+    xhr.open(`POST`, SEND_URL);
+    xhr.send(data);
+  };
+
+  const adFormSave = (evt) => {
+    save(new FormData(window.util.adForm), window.messages.saveSuccessMessage, window.messages.saveErrorMessage);
+    evt.preventDefault();
+  };
+
   window.backend = {
     load,
     onLoadHandler,
-    loadErrMessage
+    adFormSave
   };
 })();
