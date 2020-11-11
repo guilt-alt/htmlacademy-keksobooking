@@ -30,12 +30,11 @@
       window.backend.load(window.backend.onLoadHandler, window.messages.loadErrorMessage);
     }
 
-    mapFilters.addEventListener(`change`, window.filter.updatePins);
+    mapFilters.addEventListener(`change`, window.debounce(window.filter.updatePins));
 
     map.classList.remove(`map--faded`);
     adForm.classList.remove(`ad-form--disabled`);
 
-    formActivation(mapFilters, true);
     formActivation(adForm, true);
     window.validation.addValidation();
     adForm.addEventListener(`submit`, (evt) => {
@@ -91,6 +90,7 @@
   formActivation(adForm, false);
 
   window.events = {
-    removeEvents
+    removeEvents,
+    formActivation
   };
 })();
