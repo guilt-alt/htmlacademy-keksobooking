@@ -34,6 +34,18 @@ const createPins = (data) => {
   return window.util.mapPins.appendChild(pinsFragment);
 };
 
+const activePin = (pin) => {
+  const pinsList = window.util.map.querySelectorAll(`.map__pin:not(.map__pin--main)`);
+  for (let i = 0; i < pinsList.length; i++) {
+    pinsList[i].classList.remove(`map__pin--active`);
+  }
+  if (!pin.src) {
+    pin.classList.add(`map__pin--active`);
+  } else {
+    pin.parentNode.classList.add(`map__pin--active`);
+  }
+};
+
 const removePins = () => {
   const pinsList = document.querySelectorAll(`.map__pin:not(.map__pin--main)`);
   for (let i = 0; i < pinsList.length; i++) {
@@ -43,5 +55,6 @@ const removePins = () => {
 
 window.pins = {
   createPins,
+  activePin,
   removePins
 };

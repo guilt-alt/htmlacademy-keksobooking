@@ -18,6 +18,13 @@ const getRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
+const onEnterPress = (evt, action) => {
+  if (evt.key === `Enter`) {
+    evt.preventDefault();
+    action(evt);
+  }
+};
+
 const onEscPress = (evt, action) => {
   if (evt.key === `Escape`) {
     evt.preventDefault();
@@ -37,5 +44,6 @@ window.util = {
   timeIn,
   timeOut,
   getRandomInt,
+  onEnterPress,
   onEscPress
 };

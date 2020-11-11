@@ -6,8 +6,6 @@ const mapPinMain = window.util.mapPinMain;
 const mapFilters = window.util.mapFilters;
 const adForm = window.util.adForm;
 
-// const generatedMocks = window.mocks.generateMock();
-
 const formActivation = (form, enable) => {
   const elements = form.querySelectorAll(`fieldset, select`);
 
@@ -43,9 +41,7 @@ const addEvents = () => {
 
   map.addEventListener(`click`, window.cards.cardOpen);
   map.addEventListener(`keydown`, (evt) => {
-    if (evt.key === `Enter`) {
-      window.cards.cardOpen(evt);
-    }
+    window.util.onEnterPress(evt, window.cards.cardOpen);
   });
 };
 
@@ -67,9 +63,7 @@ const removeEvents = () => {
 
   map.removeEventListener(`click`, window.cards.cardOpen);
   map.removeEventListener(`keydown`, (evt) => {
-    if (evt.key === `Enter`) {
-      window.cards.cardOpen(evt);
-    }
+    window.util.onEnterPress(evt, window.cards.cardOpen);
   });
 };
 
@@ -80,9 +74,7 @@ mapPinMain.addEventListener(`mousedown`, (evt) => {
 });
 
 mapPinMain.addEventListener(`keydown`, (evt) => {
-  if (evt.key === `Enter`) {
-    addEvents();
-  }
+  window.util.onEnterPress(evt, addEvents);
 });
 
 formActivation(mapFilters, false);
