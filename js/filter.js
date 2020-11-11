@@ -10,11 +10,11 @@
     window.cards.cardClose();
     window.pins.removePins();
 
-    data = data.filter(function (data) {
+    data = data.filter(function (house) {
       if (houseType.value !== `any`) {
-        return data.offer.type === houseType.value;
+        return house.offer.type === houseType.value;
       } else {
-        return data;
+        return house;
       }
     });
 
