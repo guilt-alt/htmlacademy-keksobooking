@@ -1,6 +1,7 @@
 'use strict';
 
 (() => {
+  const PINS_MAX_COUNT = 5;
   const pins = {
     pinsMiddle: 25,
     pinsBottom: 70
@@ -21,7 +22,13 @@
 
   const createPins = (data) => {
     const pinsFragment = document.createDocumentFragment();
-    for (let i = 0; i < data.length; i++) {
+    const takeNumber = data.length > PINS_MAX_COUNT ?
+      PINS_MAX_COUNT :
+      data.length;
+
+    removePins();
+
+    for (let i = 0; i < takeNumber; i++) {
       pinsFragment.appendChild(renderPin(data[i]));
     }
 

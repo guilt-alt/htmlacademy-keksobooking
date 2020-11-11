@@ -4,7 +4,7 @@
   const map = window.util.map;
   const mapPinMain = window.util.mapPinMain;
 
-  const mapFilters = map.querySelector(`.map__filters`);
+  const mapFilters = window.util.mapFilters;
   const adForm = window.util.adForm;
 
   // const generatedMocks = window.mocks.generateMock();
@@ -29,6 +29,8 @@
     if (map.classList.contains(`map--faded`)) {
       window.backend.load(window.backend.onLoadHandler, window.messages.loadErrorMessage);
     }
+
+    mapFilters.addEventListener(`change`, window.filter.updatePins);
 
     map.classList.remove(`map--faded`);
     adForm.classList.remove(`ad-form--disabled`);

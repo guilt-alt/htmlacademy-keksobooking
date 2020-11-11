@@ -37,12 +37,14 @@
     xhr.send();
   };
 
-  const onLoadHandler = (data) => {
+  const onLoadHandler = (arr) => {
+    const data = arr;
+
     window.onLoad = {
       data
     };
 
-    window.pins.createPins(window.onLoad.data);
+    window.filter.updatePins();
   };
 
   const save = (data, onSuccess, onError) => {
