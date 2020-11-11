@@ -54,21 +54,21 @@ const updatePins = () => {
   };
 
   const Filter = [{
-      name: housingType,
-      filterFunction: filterPinsType
-    },
-    {
-      name: housingPrice,
-      filterFunction: filterPinsPrice
-    },
-    {
-      name: housingRooms,
-      filterFunction: filterPinsRooms
-    },
-    {
-      name: housingGuests,
-      filterFunction: filterPinsGuests
-    }
+    name: housingType,
+    filterFunction: filterPinsType
+  },
+  {
+    name: housingPrice,
+    filterFunction: filterPinsPrice
+  },
+  {
+    name: housingRooms,
+    filterFunction: filterPinsRooms
+  },
+  {
+    name: housingGuests,
+    filterFunction: filterPinsGuests
+  }
   ];
 
   for (let i = 0; i < Filter.length; i++) {
