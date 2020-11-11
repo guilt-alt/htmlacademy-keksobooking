@@ -92,6 +92,7 @@ const cardOpen = (evt) => {
         data = window.filtered.data[i];
       }
     }
+    window.pins.activePin(evt.target);
     createCard(data);
 
     map.addEventListener(`click`, (e) => {

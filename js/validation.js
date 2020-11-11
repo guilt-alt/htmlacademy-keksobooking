@@ -1,5 +1,7 @@
 'use strict';
 
+const FILE_TYPES = [`gif`, `jpg`, `jpeg`, `png`];
+
 const adForm = window.util.adForm;
 
 const timeIn = window.util.timeIn;
@@ -9,6 +11,32 @@ const houseType = window.util.houseType;
 const price = adForm.querySelector(`#price`);
 const roomNumber = window.util.roomNumber;
 const capacity = window.util.capacity;
+
+const avatar = adForm.querySelector(`#avatar`);
+const images = adForm.querySelector(`#images`);
+
+const avatarPreview = adForm.querySelector(`.ad-form-header__preview img`);
+const imagesPreview = adForm.querySelector(`.ad-form__photo img`);
+
+const fileLoader = (input, img) => {
+  const file = input.files[0];
+  const fileName = file.name.toLowerCase();
+
+  const matches = FILE_TYPES.some((ending) => {
+    return fileName.endsWith(ending);
+  });
+
+  if (matches) {
+    const reader = new FileReader();
+
+    reader.addEventListener(`load`, () => {
+      img.src = reader.result;
+      img.classList.remove(`hidden`);
+    });
+
+    reader.readAsDataURL(file);
+  }
+};
 
 const roomsValidation = () => {
   const capacityValue = Number(capacity.value);
@@ -64,15 +92,29 @@ const addValidation = () => {
   houseType.addEventListener(`input`, houseTypeValidation);
   capacity.addEventListener(`input`, roomsValidation);
   roomNumber.addEventListener(`input`, roomsValidation);
+  avatar.addEventListener(`change`, () => {
+    fileLoader(avatar, avatarPreview);
+  });
+  images.addEventListener(`change`, () => {
+    fileLoader(images, imagesPreview);
+  });
 };
 
 const removeValidation = () => {
   price.placeholder = `1000`;
+  avatarPreview.src = `img/muffin-grey.svg`;
+  imagesPreview.classList.add(`hidden`);
   timeIn.removeEventListener(`input`, timeOutValidation);
   timeOut.removeEventListener(`input`, timeInValidation);
   houseType.removeEventListener(`input`, houseTypeValidation);
   capacity.removeEventListener(`input`, roomsValidation);
   roomNumber.removeEventListener(`input`, roomsValidation);
+  avatar.removeEventListener(`change`, () => {
+    fileLoader(avatar, avatarPreview);
+  });
+  images.removeEventListener(`change`, () => {
+    fileLoader(images, imagesPreview);
+  });
 };
 
 const getMainPinCoords = (x, y) => {
