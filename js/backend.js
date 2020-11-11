@@ -45,6 +45,7 @@
     };
 
     window.filter.updatePins();
+    window.events.formActivation(window.util.mapFilters, true);
   };
 
   const save = (data, onSuccess, onError) => {
