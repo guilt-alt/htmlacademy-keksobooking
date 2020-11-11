@@ -37,6 +37,16 @@
     xhr.send();
   };
 
+  const onLoadHandler = (arr) => {
+    const data = arr;
+
+    window.onLoad = {
+      data
+    };
+
+    window.filter.updatePins();
+  };
+
   const save = (data, onSuccess, onError) => {
     const xhr = new XMLHttpRequest();
 
@@ -52,6 +62,7 @@
 
   window.backend = {
     load,
+    onLoadHandler,
     adFormSave
   };
 })();

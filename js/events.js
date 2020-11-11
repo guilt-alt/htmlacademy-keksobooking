@@ -27,8 +27,10 @@
 
   const addEvents = () => {
     if (map.classList.contains(`map--faded`)) {
-      window.backend.load(window.filter.onLoadHandler, window.messages.loadErrorMessage);
+      window.backend.load(window.backend.onLoadHandler, window.messages.loadErrorMessage);
     }
+
+    mapFilters.addEventListener(`change`, window.filter.updatePins);
 
     map.classList.remove(`map--faded`);
     adForm.classList.remove(`ad-form--disabled`);

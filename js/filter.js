@@ -5,33 +5,27 @@
 
   const houseType = mapFilters.querySelector(`#housing-type`);
 
-  let data = [];
-
-  const onLoadHandler = (arr) => {
-    data = arr;
-
-    updatePins();
-    houseType.addEventListener(`input`, updatePins);
-  };
-
   const updatePins = () => {
-    const result = data.filter(function (house) {
+    let data = window.onLoad.data;
+    window.cards.cardClose();
+    window.pins.removePins();
+
+    data = data.filter(function (data) {
       if (houseType.value !== `any`) {
-        return house.offer.type === houseType.value;
+        return data.offer.type === houseType.value;
       } else {
-        return house;
+        return data;
       }
     });
 
-    window.pins.createPins(result);
-    window.cards.cardClose();
+    window.pins.createPins(data);
 
-    window.filterResult = {
-      result
+    window.filtered = {
+      data
     };
   };
 
   window.filter = {
-    onLoadHandler
+    updatePins
   };
 })();

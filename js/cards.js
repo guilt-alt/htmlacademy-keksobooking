@@ -90,7 +90,7 @@
       cardClose();
       for (let i = 0; i < pinsList.length; i++) {
         if (pinsList[i] === evt.target || pinsList[i] === evt.target.parentNode) {
-          data = window.filterResult.result[i];
+          data = window.filtered.data[i];
         }
       }
       createCard(data);
