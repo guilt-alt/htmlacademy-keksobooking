@@ -27,16 +27,15 @@ const addEvents = () => {
     window.backend.load(window.backend.onLoadHandler, window.messages.loadErrorMessage);
   }
 
-  mapFilters.addEventListener(`change`, window.debounce(window.filter.updatePins));
+  mapFilters.addEventListener(`change`, window.util.debounce(window.filter.updatePins));
 
   map.classList.remove(`map--faded`);
   adForm.classList.remove(`ad-form--disabled`);
 
   formActivation(adForm, true);
   window.validation.addValidation();
-  adForm.addEventListener(`submit`, (evt) => {
-    window.backend.adFormSave(evt);
-  });
+  adForm.addEventListener(`submit`, window.backend.submitHandler);
+
   adForm.addEventListener(`reset`, removeEvents);
 
   map.addEventListener(`click`, window.cards.cardOpen);
@@ -56,9 +55,7 @@ const removeEvents = () => {
   formActivation(mapFilters, false);
   formActivation(adForm, false);
   window.validation.removeValidation();
-  adForm.removeEventListener(`submit`, (evt) => {
-    window.backend.adFormSave(evt, removeEvents);
-  });
+  adForm.removeEventListener(`submit`, window.backend.submitHandler);
   adForm.removeEventListener(`reset`, removeEvents);
 
   map.removeEventListener(`click`, window.cards.cardOpen);

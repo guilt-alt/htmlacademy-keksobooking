@@ -2,10 +2,10 @@
 
 const main = document.querySelector(`main`);
 
-const saveStatusFragment = (messageTemplate) => {
+const saveStatusFragment = (message) => {
   const fragment = document.createDocumentFragment();
 
-  fragment.appendChild(messageTemplate);
+  fragment.appendChild(message);
   return main.appendChild(fragment);
 };
 
@@ -43,7 +43,9 @@ const saveSuccessMessage = () => {
   const successTemplate = document.querySelector(`#success`)
     .content
     .querySelector(`.success`);
-  saveStatusFragment(successTemplate);
+  const success = successTemplate.cloneNode(true);
+
+  saveStatusFragment(success);
 
   window.events.removeEvents();
   window.util.adForm.reset();
@@ -55,8 +57,9 @@ const saveErrorMessage = () => {
   const errorTemplate = document.querySelector(`#error`)
     .content
     .querySelector(`.error`);
+  const error = errorTemplate.cloneNode(true);
 
-  saveStatusFragment(errorTemplate);
+  saveStatusFragment(error);
 
   removeMessage(`.error`);
 };

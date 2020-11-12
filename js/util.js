@@ -1,16 +1,26 @@
 'use strict';
 
+const DEBOUNCE_INTERVAL = 300;
+
 const map = document.querySelector(`.map`);
 const mapPins = map.querySelector(`.map__pins`);
 const mapPinMain = mapPins.querySelector(`.map__pin--main`);
 
 const mapFilters = map.querySelector(`.map__filters`);
 const adForm = document.querySelector(`.ad-form`);
-const houseType = adForm.querySelector(`#type`);
-const roomNumber = adForm.querySelector(`#room_number`);
-const capacity = adForm.querySelector(`#capacity`);
-const timeIn = adForm.querySelector(`#timein`);
-const timeOut = adForm.querySelector(`#timeout`);
+
+const debounce = (cb) => {
+  let lastTimeout = null;
+
+  return function (...parameters) {
+    if (lastTimeout) {
+      window.clearTimeout(lastTimeout);
+    }
+    lastTimeout = window.setTimeout(() => {
+      cb(...parameters);
+    }, DEBOUNCE_INTERVAL);
+  };
+};
 
 const getRandomInt = (min, max) => {
   min = Math.ceil(min);
@@ -38,11 +48,7 @@ window.util = {
   mapPinMain,
   mapFilters,
   adForm,
-  houseType,
-  roomNumber,
-  capacity,
-  timeIn,
-  timeOut,
+  debounce,
   getRandomInt,
   onEnterPress,
   onEscPress

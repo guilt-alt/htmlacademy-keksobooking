@@ -60,8 +60,12 @@ const adFormSave = (evt) => {
   evt.preventDefault();
 };
 
+const submitHandler = (evt) => {
+  adFormSave(evt);
+};
+
 window.backend = {
   load,
   onLoadHandler,
-  adFormSave
+  submitHandler
 };

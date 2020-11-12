@@ -4,13 +4,12 @@ const FILE_TYPES = [`gif`, `jpg`, `jpeg`, `png`];
 
 const adForm = window.util.adForm;
 
-const timeIn = window.util.timeIn;
-const timeOut = window.util.timeOut;
-
-const houseType = window.util.houseType;
+const houseType = adForm.querySelector(`#type`);
 const price = adForm.querySelector(`#price`);
-const roomNumber = window.util.roomNumber;
-const capacity = window.util.capacity;
+const roomNumber = adForm.querySelector(`#room_number`);
+const capacity = adForm.querySelector(`#capacity`);
+const timeIn = adForm.querySelector(`#timein`);
+const timeOut = adForm.querySelector(`#timeout`);
 
 const avatar = adForm.querySelector(`#avatar`);
 const images = adForm.querySelector(`#images`);
@@ -18,7 +17,7 @@ const images = adForm.querySelector(`#images`);
 const avatarPreview = adForm.querySelector(`.ad-form-header__preview img`);
 const imagesPreview = adForm.querySelector(`.ad-form__photo img`);
 
-const fileLoader = (input, img) => {
+const fileLoad = (input, img) => {
   const file = input.files[0];
   const fileName = file.name.toLowerCase();
 
@@ -93,16 +92,17 @@ const addValidation = () => {
   capacity.addEventListener(`input`, roomsValidation);
   roomNumber.addEventListener(`input`, roomsValidation);
   avatar.addEventListener(`change`, () => {
-    fileLoader(avatar, avatarPreview);
+    fileLoad(avatar, avatarPreview);
   });
   images.addEventListener(`change`, () => {
-    fileLoader(images, imagesPreview);
+    fileLoad(images, imagesPreview);
   });
 };
 
 const removeValidation = () => {
   price.placeholder = `1000`;
   avatarPreview.src = `img/muffin-grey.svg`;
+  imagesPreview.src = ``;
   imagesPreview.classList.add(`hidden`);
   timeIn.removeEventListener(`input`, timeOutValidation);
   timeOut.removeEventListener(`input`, timeInValidation);
@@ -110,10 +110,10 @@ const removeValidation = () => {
   capacity.removeEventListener(`input`, roomsValidation);
   roomNumber.removeEventListener(`input`, roomsValidation);
   avatar.removeEventListener(`change`, () => {
-    fileLoader(avatar, avatarPreview);
+    fileLoad(avatar, avatarPreview);
   });
   images.removeEventListener(`change`, () => {
-    fileLoader(images, imagesPreview);
+    fileLoad(images, imagesPreview);
   });
 };
 
