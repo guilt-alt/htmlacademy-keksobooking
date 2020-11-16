@@ -2,44 +2,44 @@
 
 const LOAD_URL = `https://21.javascript.pages.academy/keksobooking/data`;
 const SEND_URL = `https://21.javascript.pages.academy/keksobooking`;
-const STATUS_CODE = {
+const TIMEOUT_IN_MS = 10000;
+const StatusCode = {
   OK: 200
 };
-const TIMEOUT_IN_MS = 10000;
 
-const errorHandler = (xhr, onLoad, onError) => {
+const getServerRequest = (xhr, successLoad, errorLoad) => {
   xhr.responseType = `json`;
 
   xhr.timeout = TIMEOUT_IN_MS;
 
   xhr.addEventListener(`load`, () => {
-    if (xhr.status === STATUS_CODE.OK) {
-      onLoad(xhr.response);
+    if (xhr.status === StatusCode.OK) {
+      successLoad(xhr.response);
     } else {
-      onError(`Статус ответа: ${xhr.status} ${xhr.statusText}`);
+      errorLoad(`Статус ответа: ${xhr.status} ${xhr.statusText}`);
     }
   });
 
   xhr.addEventListener(`error`, () => {
-    onError(`Произошла ошибка соеденения`);
+    errorLoad(`Произошла ошибка соеденения`);
   });
 
   xhr.addEventListener(`timeout`, () => {
-    onError(`Запрос не успел выполниться за ${xhr.timeout}мс`);
+    errorLoad(`Запрос не успел выполниться за ${xhr.timeout}мс`);
   });
 };
 
-const load = (onLoad, onError) => {
+const load = (successLoad, errorLoad) => {
   const xhr = new XMLHttpRequest();
-  errorHandler(xhr, onLoad, onError);
+  getServerRequest(xhr, successLoad, errorLoad);
   xhr.open(`GET`, LOAD_URL);
   xhr.send();
 };
 
-const onLoadHandler = (arr) => {
+const dataLoadHandler = (arr) => {
   const data = arr;
 
-  window.onLoad = {
+  window.load = {
     data
   };
 
@@ -47,25 +47,25 @@ const onLoadHandler = (arr) => {
   window.events.formActivation(window.util.mapFilters, true);
 };
 
-const save = (data, onSuccess, onError) => {
+const save = (data, successLoad, errorLoad) => {
   const xhr = new XMLHttpRequest();
 
-  errorHandler(xhr, onSuccess, onError);
+  getServerRequest(xhr, successLoad, errorLoad);
   xhr.open(`POST`, SEND_URL);
   xhr.send(data);
 };
 
 const adFormSave = (evt) => {
-  save(new FormData(window.util.adForm), window.messages.saveSuccessMessage, window.messages.saveErrorMessage);
+  save(new FormData(window.util.adForm), window.messages.saveSuccess, window.messages.saveError);
   evt.preventDefault();
 };
 
-const submitHandler = (evt) => {
+const dataSubmitHandler = (evt) => {
   adFormSave(evt);
 };
 
 window.backend = {
   load,
-  onLoadHandler,
-  submitHandler
+  dataLoadHandler,
+  dataSubmitHandler
 };

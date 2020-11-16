@@ -1,6 +1,9 @@
 'use strict';
 
 const map = window.util.map;
+const cardTemplate = document.querySelector(`#card`)
+  .content
+  .querySelector(`.popup`);
 
 const renderCard = (data) => {
   const appartmentsType = {
@@ -9,10 +12,6 @@ const renderCard = (data) => {
     house: `Дом`,
     palace: `Дворец`
   };
-
-  const cardTemplate = document.querySelector(`#card`)
-    .content
-    .querySelector(`.popup`);
 
   const card = cardTemplate.cloneNode(true);
   const popupAvatar = card.querySelector(`.popup__avatar`);
@@ -52,21 +51,21 @@ const renderCard = (data) => {
     popupAvatar.src = data.author.avatar;
   }
 
-  for (let i = 0; i < data.offer.features.length; i++) {
-    if (!data.offer.features) {
-      popupFeatures.remove();
-    } else {
-      popupFeatures.insertAdjacentHTML(`beforeend`, `<li class="popup__feature popup__feature--${data.offer.features[i]}"></li>`);
-      popupFeatures.children[i].textContent = data.offer.features[i];
-    }
+  if (!data.offer.features) {
+    popupFeatures.remove();
+  } else {
+    data.offer.features.forEach((feature, index) => {
+      popupFeatures.insertAdjacentHTML(`beforeend`, `<li class="popup__feature popup__feature--${feature}"></li>`);
+      popupFeatures.children[index].textContent = feature;
+    });
   }
 
-  for (let i = 0; i < data.offer.photos.length; i++) {
-    if (!data.offer.photos) {
-      popupImages.remove();
-    } else {
-      popupImages.insertAdjacentHTML(`beforeend`, `<img src="${data.offer.photos[i]}" class="popup__photo" width="45" height="40" alt="Фотография жилья">`);
-    }
+  if (!data.offer.photos) {
+    popupImages.remove();
+  } else {
+    data.offer.photos.forEach((photo) => {
+      popupImages.insertAdjacentHTML(`beforeend`, `<img src="${photo}" class="popup__photo" width="45" height="40" alt="Фотография жилья">`);
+    });
   }
 
   return card;
@@ -80,6 +79,10 @@ const createCard = (data) => {
   return map.insertBefore(cardsFragment, mapFiltersContainer);
 };
 
+const cardOpenHandler = (evt) => {
+  window.util.enterPressHandler(evt, cardOpen);
+};
+
 const cardOpen = (evt) => {
   let data = [];
   const pinMatches = `.map__pin:not(.map__pin--main)`;
@@ -87,38 +90,44 @@ const cardOpen = (evt) => {
 
   if (evt.target.matches(pinMatches) || evt.target.parentNode.matches(pinMatches)) {
     cardClose();
-    for (let i = 0; i < pinsList.length; i++) {
-      if (pinsList[i] === evt.target || pinsList[i] === evt.target.parentNode) {
-        data = window.filtered.data[i];
+    pinsList.forEach((pin, index) => {
+      if (pin === evt.target || pin === evt.target.parentNode) {
+        data = window.filtered.data[index];
       }
-    }
+    });
     window.pins.activePin(evt.target);
     createCard(data);
 
-    map.addEventListener(`click`, (e) => {
-      if (e.target.matches(`.popup__close`)) {
-        cardClose();
-      }
-    });
-
-    document.addEventListener(`keydown`, (e) => {
-      if (e.key === `Escape`) {
-        cardClose();
-      }
-    });
+    map.addEventListener(`click`, cardCloseHandler);
+    map.addEventListener(`keydown`, cardCloseHandler);
+    document.addEventListener(`keydown`, cardCloseHandler);
   }
   return;
+};
+
+const cardCloseHandler = (evt) => {
+  if (evt.target.matches(`.popup__close`)) {
+    cardClose();
+  } else if (evt.key === `Enter` && evt.target.matches(`.popup__close`)) {
+    cardClose();
+  } else {
+    window.util.escPressHandler(evt, cardClose);
+  }
 };
 
 const cardClose = () => {
   const popup = map.querySelector(`.popup`);
   if (popup !== null) {
     popup.remove();
+    map.removeEventListener(`click`, cardCloseHandler);
+    map.removeEventListener(`keydown`, cardCloseHandler);
+    document.removeEventListener(`keydown`, cardCloseHandler);
   }
   return;
 };
 
 window.cards = {
-  cardOpen,
-  cardClose
+  open: cardOpen,
+  openHandler: cardOpenHandler,
+  close: cardClose
 };

@@ -1,6 +1,6 @@
 'use strict';
 
-const DEBOUNCE_INTERVAL = 300;
+const DEBOUNCE_INTERVAL = 500;
 
 const map = document.querySelector(`.map`);
 const mapPins = map.querySelector(`.map__pins`);
@@ -28,14 +28,14 @@ const getRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-const onEnterPress = (evt, action) => {
+const enterPressHandler = (evt, action) => {
   if (evt.key === `Enter`) {
     evt.preventDefault();
     action(evt);
   }
 };
 
-const onEscPress = (evt, action) => {
+const escPressHandler = (evt, action) => {
   if (evt.key === `Escape`) {
     evt.preventDefault();
     action();
@@ -50,6 +50,6 @@ window.util = {
   adForm,
   debounce,
   getRandomInt,
-  onEnterPress,
-  onEscPress
+  enterPressHandler,
+  escPressHandler
 };

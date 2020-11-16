@@ -6,77 +6,64 @@ const housingPrice = mapFilters.querySelector(`#housing-price`);
 const housingRooms = mapFilters.querySelector(`#housing-rooms`);
 const housingGuests = mapFilters.querySelector(`#housing-guests`);
 const housingFeatures = mapFilters.querySelectorAll(`.map__checkbox`);
+const filters = [
+  housingType,
+  housingPrice,
+  housingRooms,
+  housingGuests
+];
 
 const updatePins = () => {
-  let data = window.onLoad.data;
-  window.cards.cardClose();
+  let data = window.load.data;
+  window.cards.close();
   window.pins.removePins();
 
-  for (let i = 0; i < housingFeatures.length; i++) {
-    if (housingFeatures[i].checked) {
-      data = data.filter((feature) => {
-        return feature.offer.features.includes(housingFeatures[i].value);
-      });
-    }
-  }
-
-  const filterPinsType = (value) => {
-    data = data.filter((pin) => {
-      return pin.offer.type === value;
-    });
-  };
-
-  const filterPinsPrice = (value) => {
+  const getFilteredData = (value) => {
     data = data.filter((pin) => {
       switch (value) {
+        case housingType.value:
+          return pin.offer.type === value;
+        case housingRooms.value:
+          return pin.offer.rooms === Number(value);
+        case housingGuests.value:
+          return pin.offer.guests === Number(value);
         case `middle`:
           return (pin.offer.price >= 10000) && (pin.offer.price <= 50000);
         case `low`:
           return pin.offer.price < 10000;
         case `high`:
           return pin.offer.price > 50000;
+        case `wifi`:
+          return pin.offer.features.includes(value);
+        case `dishwasher`:
+          return pin.offer.features.includes(value);
+        case `parking`:
+          return pin.offer.features.includes(value);
+        case `washer`:
+          return pin.offer.features.includes(value);
+        case `elevator`:
+          return pin.offer.features.includes(value);
+        case `conditioner`:
+          return pin.offer.features.includes(value);
         default:
           return false;
       }
     });
   };
 
-  const filterPinsRooms = (value) => {
-    data = data.filter((pin) => {
-      return pin.offer.rooms === Number(value);
-    });
-  };
-
-  const filterPinsGuests = (value) => {
-    data = data.filter((pin) => {
-      return pin.offer.guests === Number(value);
-    });
-  };
-
-  const Filter = [{
-    name: housingType,
-    filterFunction: filterPinsType
-  },
-  {
-    name: housingPrice,
-    filterFunction: filterPinsPrice
-  },
-  {
-    name: housingRooms,
-    filterFunction: filterPinsRooms
-  },
-  {
-    name: housingGuests,
-    filterFunction: filterPinsGuests
-  }
-  ];
-
-  for (let i = 0; i < Filter.length; i++) {
-    const selectValue = Filter[i].name.value;
-    if (selectValue !== `any`) {
-      Filter[i].filterFunction(selectValue);
+  housingFeatures.forEach((housingFeature) => {
+    if (housingFeature.checked) {
+      const feature = housingFeature.value;
+      getFilteredData(feature);
     }
-  }
+  });
+
+  filters.forEach((filter) => {
+    const selectValue = filter.value;
+    if (selectValue !== `any`) {
+      getFilteredData(selectValue);
+    }
+  });
 
   window.pins.createPins(data);
 

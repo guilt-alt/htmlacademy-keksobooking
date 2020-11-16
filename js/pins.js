@@ -1,18 +1,18 @@
 'use strict';
 
 const PINS_MAX_COUNT = 5;
-const pins = {
-  pinsMiddle: 25,
-  pinsBottom: 70
+const Pins = {
+  MIDDLE: 25,
+  BOTTOM: 70
 };
 
-const renderPin = (data) => {
-  const pinTemplate = document.querySelector(`#pin`)
-    .content
-    .querySelector(`button`);
+const pinTemplate = document.querySelector(`#pin`)
+  .content
+  .querySelector(`button`);
 
+const renderPin = (data) => {
   const pin = pinTemplate.cloneNode(true);
-  pin.style = `left: ${data.location.x - pins.pinsMiddle}px; top: ${data.location.y - pins.pinsBottom}px;`;
+  pin.style = `left: ${data.location.x - Pins.MIDDLE}px; top: ${data.location.y - Pins.BOTTOM}px;`;
   pin.querySelector(`img`).src = data.author.avatar;
   pin.querySelector(`img`).alt = data.offer.title;
 
@@ -36,9 +36,9 @@ const createPins = (data) => {
 
 const activePin = (pin) => {
   const pinsList = window.util.map.querySelectorAll(`.map__pin:not(.map__pin--main)`);
-  for (let i = 0; i < pinsList.length; i++) {
-    pinsList[i].classList.remove(`map__pin--active`);
-  }
+  pinsList.forEach((element) => {
+    element.classList.remove(`map__pin--active`);
+  });
   if (!pin.src) {
     pin.classList.add(`map__pin--active`);
   } else {
@@ -48,9 +48,9 @@ const activePin = (pin) => {
 
 const removePins = () => {
   const pinsList = document.querySelectorAll(`.map__pin:not(.map__pin--main)`);
-  for (let i = 0; i < pinsList.length; i++) {
-    pinsList[i].remove();
-  }
+  pinsList.forEach((element) => {
+    element.remove();
+  });
 };
 
 window.pins = {

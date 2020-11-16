@@ -84,6 +84,14 @@ const timeOutValidation = () => {
   return;
 };
 
+const avatarLoadHandler = () => {
+  fileLoad(avatar, avatarPreview);
+};
+
+const imagesLoadHandler = () => {
+  fileLoad(images, imagesPreview);
+};
+
 const addValidation = () => {
   roomsValidation();
   timeIn.addEventListener(`input`, timeOutValidation);
@@ -91,12 +99,8 @@ const addValidation = () => {
   houseType.addEventListener(`input`, houseTypeValidation);
   capacity.addEventListener(`input`, roomsValidation);
   roomNumber.addEventListener(`input`, roomsValidation);
-  avatar.addEventListener(`change`, () => {
-    fileLoad(avatar, avatarPreview);
-  });
-  images.addEventListener(`change`, () => {
-    fileLoad(images, imagesPreview);
-  });
+  avatar.addEventListener(`change`, avatarLoadHandler);
+  images.addEventListener(`change`, imagesLoadHandler);
 };
 
 const removeValidation = () => {
@@ -109,18 +113,14 @@ const removeValidation = () => {
   houseType.removeEventListener(`input`, houseTypeValidation);
   capacity.removeEventListener(`input`, roomsValidation);
   roomNumber.removeEventListener(`input`, roomsValidation);
-  avatar.removeEventListener(`change`, () => {
-    fileLoad(avatar, avatarPreview);
-  });
-  images.removeEventListener(`change`, () => {
-    fileLoad(images, imagesPreview);
-  });
+  avatar.removeEventListener(`change`, avatarLoadHandler);
+  images.removeEventListener(`change`, imagesLoadHandler);
 };
 
 const getMainPinCoords = (x, y) => {
   const mapPinMain = window.util.mapPinMain;
   const mapPinMainMiddle = Math.ceil(mapPinMain.clientWidth * 0.50);
-  const mapPinMainBottom = mapPinMain.clientWidth + 16;
+  const mapPinMainBottom = 80;
   const address = adForm.querySelector(`#address`);
   const pinCoords = `${parseInt(x, 10) + mapPinMainMiddle}, ${parseInt(y, 10) + mapPinMainBottom}`;
   address.value = pinCoords;
@@ -129,7 +129,7 @@ const getMainPinCoords = (x, y) => {
 };
 
 window.validation = {
-  addValidation,
-  removeValidation,
+  add: addValidation,
+  remove: removeValidation,
   getMainPinCoords
 };
